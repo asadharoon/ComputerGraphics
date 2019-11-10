@@ -1,0 +1,158 @@
+Detecting Colors in Pictures and Combining the colors output:
+
+#include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+
+int main1() {
+	Mat image = imread("D:\\colorful.jpg");
+	Mat output,output1,output2;
+	inRange(image, Scalar(100, 0, 0), Scalar(255, 100, 100), output);
+	namedWindow("Original Image", WINDOW_NORMAL);// Create a window for display.
+	imshow("Original Image", image);
+	namedWindow("Blue Color Detection", WINDOW_AUTOSIZE);// Create a window for display.
+	imshow("Blue Color Detection", output);
+	int x = countNonZero(output);
+	cout << "Blue pixels are " << x << endl;
+	inRange(image, Scalar(0, 100, 0), Scalar(100, 255, 100), output1);
+	namedWindow("Green Color Detection", WINDOW_AUTOSIZE);// Create a window for display.
+	imshow("Green Color Detection", output1);
+	int y = countNonZero(output1);
+	cout << "Green pixels are " << y << endl;
+	inRange(image, Scalar(0, 0, 100), Scalar(100, 100, 255), output2);
+	namedWindow("Red Color Detection", WINDOW_AUTOSIZE);// Create a window for display.
+	imshow("Red Color Detection", output2);
+	int z = countNonZero(output2);
+	cout << "Red pixels are " << z<<endl;
+	Mat combine;
+	combine = output | output1 | output2;
+	namedWindow("Combined", WINDOW_AUTOSIZE);// Create a window for display.
+	imshow("Combined", combine);
+	waitKey(0);                                          // Wait for a keystroke in the window
+	return 0;
+}
+
+Changing Colors:
+#include<opencv2/highgui.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std; //std is the standard namespace you can also call these functions using std::cout
+int main()
+{
+	Mat image;
+	image = imread("D:\\opencv.png");
+	Mat image2 = imread("D:\\opencv.png");
+	for (int i = 0; i < image.rows; i++) {
+		for (int j = 0; j < image.cols; j++) {
+			if (i < image.rows / 2) {
+				image.at<Vec3b>(i, j)[0] = 255; //B
+				image.at<Vec3b>(i, j)[1] = 0;//G
+				image.at<Vec3b>(i, j)[2] = 0;//R
+			}
+			else {
+				image.at<Vec3b>(i, j)[0] = 0; //B
+				image.at<Vec3b>(i, j)[1] = 0;//G
+				image.at<Vec3b>(i, j)[2] = 255;//R
+			}
+		}
+	}
+	cout << "Size: " << image.rows << "x" << image.cols;
+	namedWindow("Original Image", WINDOW_FREERATIO);
+	imshow("Original Image",image2);
+	namedWindow("Coloring", WINDOW_FREERATIO);
+	imshow("Coloring", image);
+	waitKey(0);
+	return 0;
+}
+Changing colors row-wise and column-wise:
+//#include<opencv2/highgui.hpp>
+//#include<iostream>
+//#include<stdlib.h>
+//using namespace cv;
+//using namespace std;
+//int main()
+//{
+//	Mat image;
+//
+//	int b=40, g=50, r=60;
+//	
+//	image = imread("D:\\domicile.jpg");
+//	//Row wise
+//	for (int i = 0; i < image.rows; i++) {
+//		for (int j = 0; j < image.cols; j++) {
+//			b = rand() % 180;
+//			g = rand() % 180;
+//			r = rand() % 180;
+//			image.at<Vec3b>(i, j)[0] = b;
+//			image.at<Vec3b>(i, j)[1] = g;
+//			image.at<Vec3b>(i, j)[2] = r;
+//			
+//		}
+//		
+//	}
+//	//Column wise
+//	/*for (int i = 0; i < image.cols; i++)
+//	{
+//		for (int j = 0; j < image.rows; j++)
+//		{
+//			image.at<Vec3b>(j, i)[0] = b;
+//			image.at<Vec3b>(j, i)[1] = g;
+//			image.at<Vec3b>(j, i)[2] = r;
+//		}
+//		b = b + 4;
+//		g = g + 5;
+//		r = r + 6;
+//	}*/
+//	namedWindow("Output",WINDOW_FREERATIO);
+//	imshow("Output", image);
+//	waitKey(0);
+//	return 0;
+//}
+
+Video Capture from Camera and detecting different colors from camera
+#include<opencv2/highgui.hpp>
+#include<iostream>
+#include<stdlib.h>
+using namespace cv;
+using namespace std;
+int main()
+{
+	VideoCapture cap(0);
+	int b = 40, g = 50, r = 60;
+	while (1)
+	{
+		Mat frame;
+		bool bsuccess=cap.read(frame);
+		Mat ff;
+		bool bsuccess1 = cap.read(ff);
+		namedWindow("Output1",WINDOW_FULLSCREEN);
+		imshow("Output1", ff);
+	
+		Mat output;
+		inRange(frame, Scalar(100, 0, 0), Scalar(255, 100, 100), output);
+		namedWindow("Blue", WINDOW_FULLSCREEN);
+		imshow("Blue", output);
+		Mat green;
+		inRange(frame, Scalar(0, 100, 0), Scalar(100, 255, 100), green);
+		namedWindow("Green", WINDOW_FULLSCREEN);
+		imshow("Green", green);
+		Mat red;
+		inRange(frame, Scalar(0, 0, 100), Scalar(100, 100, 255),red);
+		namedWindow("Red", WINDOW_FULLSCREEN);
+		imshow("Red",red);
+		Mat combined;
+		combined = output | red | green;
+		namedWindow("Combined Output", WINDOW_FULLSCREEN);
+		imshow("Combined Output",combined);
+
+		if (waitKey(30) == 27)
+		{
+			cout << "esc key is pressed" << endl;
+			break;
+		}
+	}
+	
+	//waitKey(0);
+	return 0;
+}
